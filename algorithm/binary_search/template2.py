@@ -55,8 +55,50 @@ class SolutionOfFirstBadVersion:
         return start if start == end else middle
 
 first_bad_version = SolutionOfFirstBadVersion()
-print(first_bad_version.firstBadVersion(6))
-print(first_bad_version.firstBadVersion(7))
+# print(first_bad_version.firstBadVersion(6))
+# print(first_bad_version.firstBadVersion(7))
+
+from typing import List
+class FindPeakElement:
+    def isPeak(self, index):
+        l = len(self.nums) # 调用时，保证 l 大于 1
+        if index == 0:
+            # 第一个元素，只要判断是否大于下一个就可以了
+            return self.nums[0] > self.nums[1]
+        if index == l - 1:
+            return self.nums[index] > self.nums[index - 1]
+        return self.nums[index] > self.nums[index - 1] and self.nums[index] > self.nums[index + 1]
+
+
+    def findPeakElement(self, nums: List[int]) -> int:
+        l = len(nums)
+        self.nums = nums
+        
+        if l == 0:
+            return -1
+        if l == 1:
+            return 0
+
+        start = 0
+        end = l - 1
+
+        while start < end:
+            middle = (start + end) >> 1
+            if self.isPeak(middle):
+                return middle
+            else:
+                if nums[middle] < nums[middle + 1]:
+                    start = middle + 1
+                else:
+                    end = middle - 1
+        return start if start == end else middle 
+
+        
+findPeak = FindPeakElement()
+print(findPeak.findPeakElement([1,3]))
+print(findPeak.findPeakElement([1,4,5,6,3]))
+
+
             
 
 
