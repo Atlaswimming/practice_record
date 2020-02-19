@@ -95,10 +95,62 @@ class FindPeakElement:
 
         
 findPeak = FindPeakElement()
-print(findPeak.findPeakElement([1,3]))
-print(findPeak.findPeakElement([1,4,5,6,3]))
+# print(findPeak.findPeakElement([1,3]))
+# print(findPeak.findPeakElement([1,4,5,6,3]))
 
 
-            
+class SearchFirstIndex:
+    def binarySearch(self, leftIndex, isLeft):
+        l = len(self.nums)
+        left = leftIndex
+        right = l - 1
+        while left < right:
+            if not isLeft and left + 1 == right:
+                break
+            middle = (left + right) >> 1
+            if self.nums[middle] == self.target:
+                if isLeft:
+                    right = middle
+                else:
+                    left = middle
+            elif self.nums[middle] > self.target:
+                right = middle - 1
+            else:
+                left = middle + 1
 
+        if isLeft:
+            return left if self.nums[left] == self.target else -1
+        else:
+            if self.nums[right] == self.target:
+                return right
+            elif self.nums[left] == self.target:
+                return left
+            else:
+                return -1
+        
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        l = len(nums)
+        no_result = [-1, -1]
 
+        if l == 0 or target < nums[0] or target > nums[-1]:
+            return no_result
+        if l == 1:
+            return no_result if nums[0] != target else [0, 0]
+
+        result = [-1, -1]
+        self.nums = nums
+        self.target = target
+
+        result[0] = self.binarySearch(0, True)
+        
+        if result[0] == -1:
+            return no_result
+        result[1] = self.binarySearch(result[0], False)
+
+        return result
+
+searchFirstIndex = SearchFirstIndex()
+print(searchFirstIndex.searchRange([1,2,2,2,3,4], 7))
+print(searchFirstIndex.searchRange([1,2,2,2,3,4], 2))
+print(searchFirstIndex.searchRange([1,2,2,2,3,3,4,4,5], 4))
+print(searchFirstIndex.searchRange([7, 7], 7))
