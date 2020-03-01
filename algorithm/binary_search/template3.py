@@ -1,86 +1,56 @@
-def binarySearch(nums, target):
-    """
-    :type nums: List[int]
-    :type target: int
-    :rtype: int
-    """
-    if len(nums) == 0:
-        return -1
-
-    left = 0
-    right = len(nums) - 1
-    while left + 1 < right:
-        mid = (left + right) // 2
-        if nums[mid] == target:
-            return mid
-        elif nums[mid] < target:
-            left = mid
-        else:
-            right = mid
-
-    # Post-processing:
-    # End Condition: left + 1 == right
-    print(left, right)
-    if nums[left] == target: return left
-    if nums[right] == target: return right
-    return -1
-
-print(binarySearch([1,2,2,3,4,6,7],4))
-
-
 from typing import List
 class SearchBothIndex:
-    def binarySearch(self, leftIndex, isLeft):
-        l = len(self.nums)
-        left = leftIndex
-        right = l - 1
-        while left < right:
-            if not isLeft and left + 1 == right:
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        l = len(arr)
+        
+        if k >= l:
+            return arr
+        elif k == 0:
+            return []
+        
+        # if x >= arr[-1]:
+        #     return arr[l-k+1:]
+        # elif x <= arr[0]:
+        #     return arr[0:k]
+        
+        
+        start = 0
+        end = l - 1
+        closestIndex = -1
+        
+        while start < end:
+            middle = (start + end) >> 1
+            if arr[middle] == x:
+                closestIndex = middle
                 break
-            middle = (left + right) >> 1
-            if self.nums[middle] == self.target:
-                if isLeft:
-                    right = middle
-                else:
-                    left = middle
-            elif self.nums[middle] > self.target:
-                right = middle - 1
+            elif arr[middle] > x:
+                end = middle - 1
             else:
-                left = middle + 1
+                start = middle + 1
+        
+        if closestIndex == -1:
+            # 没找到相等的值，此时 start 应该等于 end
+            closestIndex = start
+        
+        startIndex = 0 if closestIndex - k + 1 < 0 else closestIndex - k + 1
+        endIndex = l - 1 if closestIndex + k - 1 > l else closestIndex + k - 1
+        
+        result = arr[startIndex:endIndex+1]
 
-        if isLeft:
-            return left if self.nums[left] == self.target else -1
-        else:
-            if self.nums[right] == self.target:
-                return right
-            elif self.nums[left] == self.target:
-                return left
+        if endIndex - startIndex + 1 == k:
+            return result
+        print(result)
+
+        # for i in range(0, (endIndex - startIndex + 1) >> 1 + 1):
+        for i in range(0, len(result)):
+            if len(result) == k:
+                return result
+            if abs(result[0] - x) > abs(result[-1] - x):
+                result.pop(0)
             else:
-                return -1
-        
-    def searchRange(self, nums: List[int], target: int) -> List[int]:
-        l = len(nums)
-        no_result = [-1, -1]
-
-        if l == 0 or target < nums[0] or target > nums[-1]:
-            return no_result
-        if l == 1:
-            return no_result if nums[0] != target else [0, 0]
-
-        result = [-1, -1]
-        self.nums = nums
-        self.target = target
-
-        result[0] = self.binarySearch(0, True)
-        
-        if result[0] == -1:
-            return no_result
-        result[1] = self.binarySearch(result[0], False)
-
-        return result
+                result.pop(-1)
 
 searchBothIndex = SearchBothIndex()
-print(searchBothIndex.searchRange([1,2,2,2,3,4], 7))
-print(searchBothIndex.searchRange([1,2,2,2,3,4], 2))
-print(searchBothIndex.searchRange([1,2,2,2,3,3,4,4,5], 4))
-print(searchBothIndex.searchRange([7, 7], 7))
+print(searchBothIndex.findClosestElements([1,2,3,4, 5], 4,3))
+print(searchBothIndex.findClosestElements([1,1,1,10,10,10], 1,9))
+print(searchBothIndex.findClosestElements([0,1,2,2,2,3,6,8,8,9], 5,9))
