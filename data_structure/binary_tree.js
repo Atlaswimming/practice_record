@@ -38,16 +38,8 @@ class Tree {
  * from some starting node to any node in the tree along the 
  * parent-child connections. The path must contain at least 
  * one node and does not need to go through the root.
- * 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
  */
- 
-/**
- * @param {TreeNode} root
- * @return {number}
- */
-let maxValue = -Infinity;
-const maxPathSum = function(root) {
+ const maxPathSum = function(root) {
     let maxValue = -Infinity;
     const findMax = (root) => {
         if (root === null) return 0;
@@ -71,3 +63,62 @@ const test_maxPathSum = () => {
 }
 
 test_maxPathSum();
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * 105. Construct Binary Tree from Preorder and Inorder Traversal
+ * Given preorder and inorder traversal of a tree, construct the binary tree.
+ */
+/**
+ * @param {number[]} preorder
+ * @param {number[]} inorder
+ * @return {Node}
+ */
+var buildTree = function(preorder, inorder) {
+    const construct = (
+        preorder=[], 
+        preStart, 
+        preEnd, 
+        inorder=[], 
+        inStart, 
+        inEnd) => {
+            // console.log(preorder, preStart, preEnd, inorder, inStart, inEnd, "root: ", preorder[preStart])
+            if(preStart > preEnd || inStart > inEnd) return null;
+            const root = new Node(preorder[preStart]);
+            const indexOfRootOfInorder = inorder.indexOf(preorder[preStart]);
+            const numOfLeftTree = indexOfRootOfInorder - inStart;
+            // console.log(root, indexOfRootOfInorder, numOfLeftTree)
+            root.left = construct(
+                preorder, 
+                preStart + 1, 
+                preStart + numOfLeftTree, 
+                inorder, 
+                inStart, 
+                indexOfRootOfInorder - 1
+            );
+            root.right = construct(
+                preorder, 
+                preStart + numOfLeftTree + 1, 
+                preEnd, 
+                inorder, 
+                indexOfRootOfInorder + 1, 
+                inEnd
+            )
+            
+            return root;
+    }
+    return construct(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1)
+};
+
+const test_buildTree = () => {
+    const case2_pre = [3,9,20,15,7];
+    const case2_in = [9,3,15,20,7];
+    console.log(buildTree(case2_pre, case2_in));
+
+    const case3_pre = [1,2,3];
+    const case3_in = [3,2,1];
+    console.log(buildTree(case3_pre, case3_in))
+}
+
+test_buildTree();
